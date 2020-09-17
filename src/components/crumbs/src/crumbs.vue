@@ -48,8 +48,24 @@ export default {
             let path = this.activeIndex;
             this.$router.push({path:path})
         },
-        removeTab(){
+        removeTab(targerName){
+            //首页不可删除
+            if (targerName == '/datapresentation'){
+                return
+            }
+            //openTab
+            this.$store.commit('delete_tabs',targerName);
 
+            //还同时需要处理一种情况需要移除的页面为当前激活的页面时，将上一个tab页作为激活tab
+            if(this.activeIndex === targerName){
+                //设置当前激活的路由
+                if(this.openTab && this.openTab.length >= 1) {
+                    this.$store.commit('set_active_index',this.openTab[this.openTab.length - 1].route);
+                    this.$router.push({path: this.activeIndex});
+                }else{
+                    this.$router.push({path: '/datapresentation'});
+                }
+            }
         }
     }
 }
